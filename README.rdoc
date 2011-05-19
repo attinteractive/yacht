@@ -1,0 +1,73 @@
+= Yacht
+
+Yacht is an application configuration gem that lets you define settings for multiple environments in YAML files. It is similar to AppConfig[https://github.com/cjbottaro/app_config] with additional features like:
+* use of ClassyStruct for improved performance over OpenStruct
+* protection of sensitive settings by specifying a whitelist in a YAML file
+* easy override of nested keys (not pretty with YAML references)
+
+== Installation
+
+* <b>Rails</b>:
+  Add this to your Gemfile and run the +bundle+ command.
+
+    gem "yacht"
+
+* Outside of rails, just require the gem as usual:
+
+    require 'rubygems'
+    require 'yacht'
+
+== Getting Started
+
+=== Step 1: YAML files
+
+First create two (or more) YAML files in the same directory to define your settings:
+
+    # config/yacht/base.yml (required)
+    production:
+      cdn_host: 1.2.3.4
+      super_secret_info:
+        aws_key: foofoo
+        twitter_key: barbar
+    test:
+      cdn_host: localhost
+      super_secret_info:
+        # you can safely overwrite a single value in a nested key
+        # YAML references (& and *) don't let you do this
+        #   see https://gist.github.com/979804 for an explanation
+        aws_key: bazbaz
+
+    # config/yacht/whitelist.yml (required)
+    # any keys specified here can be used as a whitelist filter:
+    #   YachtLoader.to_hash(:apply_whitelist? => true)
+    #   (by default the whitelist is ignored)
+    - super_secret_info
+
+    # config/yacht/local.yml (optional)
+    # any values set in local.yml will override values set in base.yml
+    # useful for development and testing
+    production:
+      cdn_host: localhost
+
+=== Step 2: Define a constant
+
+* <b>Rails</b>:
+    # config/initializers/01_yacht.rb
+    # Define a constant that will store all settings
+    # looks for the following YAML files:
+    #   * config/yacht/base.yml
+    #   * config/yacht/local.yml
+    #   * config/yacht/whitelist.yml
+    Yacht = YachtLoader.to_classy_struct
+    # now you can access any key set in your YAML files with:
+    #   Yacht.my_key
+
+* Outside of rails, you need to tell +YachtLoader+ where your YAML files are stored, and what environment you want to use.
+    YachtLoader.dir          = '/path/to/YAML/dir'
+    YachtLoader.environment  = 'my_environment'
+    Yacht                    = YachtLoader.to_classy_struct
+
+
+== How it works
+
+Currently, the +Yacht+ gem defines a class called +YachtLoader+ that will read your YAML files and output them as a regular +Hash+ or a +ClassyStruct+ . Then you use <tt>YachtLoader#to_classy_struct</tt> (or <tt>YachtLoader#to_hash</tt>) to define a constant. You can name the constant whatever you like, but you should use +Yacht+. This is because a planned feature is to have +Yacht+ defined when the gem is required and have everything namespaced under a single +Yacht+ class.
