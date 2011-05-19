@@ -13,7 +13,7 @@ SimpleCov.start
 
 require 'yacht'
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.after :each do
     YachtLoader.environment = nil
     YachtLoader.dir         = nil

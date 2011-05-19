@@ -1,5 +1,6 @@
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+require 'rspec/core/rake_task'
+
+desc "Run RSpec"
+RSpec::Core::RakeTask.new do |t|
+  t.verbose = true
 end

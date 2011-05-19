@@ -26,14 +26,14 @@ describe "to_classy_struct" do
   it "passes options to to_hash" do
     YachtLoader.should_receive(:to_hash).with({:my => :awesome_option})
 
-    Yacht = YachtLoader.to_classy_struct({:my => :awesome_option})
+    YachtLoader.to_classy_struct({:my => :awesome_option})
   end
 
   it "raises a custom error if ClassyStruct cannot be created" do
     YachtLoader.stub!(:to_hash).and_raise("some funky error")
 
     expect {
-      Yacht = YachtLoader.to_classy_struct
+      YachtLoader.to_classy_struct
     }.to raise_error(YachtLoader::LoadError, /some funky error/)
   end
 end
