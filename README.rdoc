@@ -71,3 +71,7 @@ First create two (or more) YAML files in the same directory to define your setti
 == How it works
 
 Currently, the +Yacht+ gem defines a class called +YachtLoader+ that will read your YAML files and output them as a regular +Hash+ or a +ClassyStruct+ . Then you use <tt>YachtLoader#to_classy_struct</tt> (or <tt>YachtLoader#to_hash</tt>) to define a constant. You can name the constant whatever you like, but you should use +Yacht+. This is because a planned feature is to have +Yacht+ defined when the gem is required and have everything namespaced under a single +Yacht+ class.
+
+== License
+
+Yacht is licensed under the MIT License with one addition: The Software shall be used for Good, not Evil.
