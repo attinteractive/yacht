@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name        = "yacht"
   s.version     = YachtLoader::VERSION
   s.authors     = ["Mani Tadayon", "Rico Rodriquez Collins"]
-  s.description = "Yacht is Yet Another Application Configuration Helper Tool."
+  s.description = "Yacht is Yet Another Configuration Helper Tool."
   s.summary     = "yacht-#{s.version}"
   s.email       = ["mtadayon@atti.com", "rcollins@atti.com"]
   s.homepage    = "https://github.com/attinteractive/yacht"
