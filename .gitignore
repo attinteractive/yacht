@@ -1,4 +1,6 @@
 coverage
+tmp
+doc
 *.gem
 .DS_Store
 Gemfile.lock

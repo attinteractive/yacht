@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency "classy_struct", ">= 0.3.2"
 
+  s.add_development_dependency "cucumber", '>= 0.10.0'
+  s.add_development_dependency 'aruba', '>= 0.3.7'
   s.add_development_dependency "rspec", '>= 2.6.0'
   s.add_development_dependency "simplecov", '>= 0.4.1'
 
