@@ -1,0 +1,6 @@
+--title "Yacht: Yet Another Configuration Helper Tool"
+--no-private
+lib/**/*.rb
+Gemfile
+features//*.feature
+features//*.rb
