@@ -2,7 +2,7 @@ When /^I define the constant "([^"]*)" with environment: "([^"]*)"( using a whit
   in_current_dir do
     YachtLoader.dir = '.'
     YachtLoader.environment = env
-    Object.const_set( constant_name, YachtLoader.to_classy_struct(:apply_whitelist? => !!whitelist ) )
+    Object.const_set( constant_name, YachtLoader.to_classy_struct(:apply_whitelist? => whitelist ) )
   end
 end
 

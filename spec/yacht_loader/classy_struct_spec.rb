@@ -36,4 +36,12 @@ describe "to_classy_struct" do
       YachtLoader.to_classy_struct
     }.to raise_error(YachtLoader::LoadError, /some funky error/)
   end
+
+  it "does not intercept YachtLoader custom errors" do
+    YachtLoader.stub!(:to_hash).and_raise YachtLoader::LoadError.new("custom error message")
+
+    expect {
+      YachtLoader.to_classy_struct
+    }.to raise_error(YachtLoader::LoadError, "custom error message")
+  end
 end

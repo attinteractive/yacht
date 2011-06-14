@@ -28,6 +28,19 @@ describe YachtLoader do
     end
   end
 
+  describe :local_config do
+    it "calls load_config_file" do
+      YachtLoader.should_receive(:load_config_file).with(:local, :require_presence? => false).and_return('local_foo')
+
+      YachtLoader.local_config
+    end
+
+    it "returns an empty hash if load_config_file returns nil" do
+      YachtLoader.stub(:load_config_file).with(:local, :require_presence? => false).and_return(nil)
+      YachtLoader.local_config.should == {}
+    end
+  end
+
   context "whitelist" do
     it "loads keys into an Array" do
       YachtLoader.whitelist.should == ["defaultkey", "hashkey"]
@@ -122,16 +135,6 @@ describe YachtLoader do
       YachtLoader.to_hash['defaultkey'].should == 'defaultvalue'
       YachtLoader.to_hash['name'].should == 'an_environment'
       YachtLoader.to_hash['localkey'].should == 'localvalue'
-    end
-
-    it "uses base config if missing" do
-      banish_config_file_from_prefix('local')
-
-      File.should_not_receive(:read).with('local_config_file')
-
-      YachtLoader.send(:local_config).should == {}
-      YachtLoader.to_hash['defaultkey'].should == 'defaultvalue'
-      YachtLoader.to_hash['name'].should == 'an_environment'
     end
 
     it "uses base config if empty" do

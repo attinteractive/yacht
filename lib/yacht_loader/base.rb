@@ -34,7 +34,7 @@ class YachtLoader
     end
 
     def to_hash(opts={})
-     opts[:apply_whitelist?] = false unless opts.has_key?(:apply_whitelist?)
+     opts[:apply_whitelist?] ||= false unless opts.has_key?(:apply_whitelist?)
      self.environment = opts[:env] if opts.has_key?(:env)
 
      if opts[:apply_whitelist?]
