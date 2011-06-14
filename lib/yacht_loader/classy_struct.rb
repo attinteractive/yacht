@@ -9,7 +9,12 @@ class YachtLoader
     def to_classy_struct(opts={})
       classy_struct_instance.new( self.to_hash(opts) )
     rescue StandardError => e
-      raise LoadError.new("Error creating ClassyStruct: #{e.message}")
+      # don't do anything to our own custom errors
+      if e.is_a? YachtLoader::LoadError
+        raise e
+      else
+        raise LoadError.new("Error creating ClassyStruct: #{e.message}")
+      end
     end
   end
 end

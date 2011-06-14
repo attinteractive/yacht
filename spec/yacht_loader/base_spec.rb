@@ -13,12 +13,19 @@ describe YachtLoader do
     end
   end
 
-  it "raises an error if base config file is missing" do
-    banish_config_file_from_prefix('base')
+  describe :base_config do
+    it "calls load_config_file" do
+      YachtLoader.should_receive(:load_config_file).with(:base).and_return('foo')
 
-    expect {
-      YachtLoader.to_hash
-    }.to raise_error( YachtLoader::LoadError, /Couldn't load base config/)
+      YachtLoader.base_config
+    end
+
+    it "raises an error if load_config_file returns nil" do
+      YachtLoader.stub(:load_config_file).with(:base).and_return(nil)
+      expect {
+        YachtLoader.base_config
+      }.to raise_error(YachtLoader::LoadError, "Couldn't load base config")
+    end
   end
 
   context "whitelist" do
