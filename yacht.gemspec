@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", '>= 2.6.0'
   s.add_development_dependency "simplecov", '>= 0.4.1'
 
+
   s.required_rubygems_version = ">= 1.3.7"
   s.files            = `git ls-files`.split("\n")
   s.test_files       = `git ls-files -- spec/*`.split("\n")

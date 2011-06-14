@@ -3,7 +3,7 @@ Feature: Load configuration settings
   As a developer using Yacht
   I want to load configuration settings from an external source like a YAML file
 
-  Scenario: Load from YAML
+  Background:
     Given a file named "base.yml" with:
     """
     default:
@@ -24,6 +24,8 @@ Feature: Load configuration settings
         host: example.com
         reply-to: info@example.com
     """
+
+  Scenario: Load from YAML
     When I define the constant "Yacht" with environment: "development"
     Then the constant "Yacht" should contain the following hash:
       """
@@ -37,5 +39,42 @@ Feature: Load configuration settings
                                 :host => 'localhost',
                                 :from => 'Our great company'
                               }
+        }
+      """
+
+  Scenario: Local overrides with local.yml
+    Given a file named "local.yml" with:
+      """
+      api_key: some_crazy_local_key
+      """
+      When I define the constant "Yacht" with environment: "development"
+      Then the constant "Yacht" should contain the following hash:
+        """
+          {
+            :api_key       =>  'some_crazy_local_key',
+            :partner_sites =>  [
+                                  'twitter',
+                                  'github'
+                                ],
+            :mail          =>  {
+                                  :host => 'localhost',
+                                  :from => 'Our great company'
+                                }
+          }
+        """
+
+  Scenario: Whitelisting with whitelist.yml
+  Given a file named "whitelist.yml" with:
+    """
+    - partner_sites
+    """
+    When I define the constant "Yacht" with environment: "development" using a whitelist
+    Then the constant "Yacht" should contain the following hash:
+      """
+        {
+          :partner_sites =>  [
+                                'twitter',
+                                'github'
+                              ]
         }
       """

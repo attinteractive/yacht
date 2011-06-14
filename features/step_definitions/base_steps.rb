@@ -1,8 +1,8 @@
-When /^I define the constant "([^"]*)" with environment: "([^"]*)"$/ do |constant_name, env|
+When /^I define the constant "([^"]*)" with environment: "([^"]*)"( using a whitelist)?$/ do |constant_name, env, whitelist|
   in_current_dir do
     YachtLoader.dir = '.'
     YachtLoader.environment = env
-    Object.const_set( constant_name, YachtLoader.to_classy_struct )
+    Object.const_set( constant_name, YachtLoader.to_classy_struct(:apply_whitelist? => !!whitelist ) )
   end
 end
 
