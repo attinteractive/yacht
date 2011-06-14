@@ -45,15 +45,11 @@ class YachtLoader
    end
 
     def whitelist
-      load_config_file(:whitelist, :expect_to_load => Array) || begin
-        raise LoadError.new("Couldn't load whitelist")
-      end
+      load_config_file(:whitelist, :expect_to_load => Array) || raise( LoadError.new("Couldn't load whitelist") )
     end
 
     def base_config
-      load_config_file(:base) || begin
-        raise LoadError.new("Couldn't load base config")
-      end
+      load_config_file(:base) || raise( LoadError.new("Couldn't load base config") )
     end
 
     def local_config
