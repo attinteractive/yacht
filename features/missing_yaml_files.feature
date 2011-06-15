@@ -11,13 +11,20 @@ Feature: Handle missing YAML files reasonably
 
   Scenario: No base.yml
     Given a file named "base.yml" does not exist
-    Then a "YachtLoader::LoadError" error with message "Couldn't load base config" should be raised when I try to use Yacht
+    When I try to use Yacht
+    Then Yacht should raise an error with message: "Couldn't load base config"
 
   Scenario: No local.yml
     Given a file named "local.yml" does not exist
-    Then I should not receive an error when I try to use Yacht
+    When I try to use Yacht
+    Then Yacht should not raise an error
 
-  Scenario: No whitelist.yml
+  Scenario: No whitelist.yml but whitelist not used
     Given a file named "whitelist.yml" does not exist
-    Then I should not receive an error when I try to use Yacht
-    But a "YachtLoader::LoadError" error with message "Couldn't load whitelist" should be raised when I try to use Yacht with a whitelist
+    When I try to use Yacht
+    Then Yacht should not raise an error
+
+  Scenario: No whitelist.yml and whitelist used
+    Given a file named "whitelist.yml" does not exist
+    When I try to use Yacht with a whitelist
+    Then Yacht should raise an error with message: "Couldn't load whitelist"
