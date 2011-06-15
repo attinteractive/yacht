@@ -1,14 +1,10 @@
 Then /^Yacht should raise an error with message: "([^"]*)"$/ do |message|
-  @last_yacht.class.should be(YachtLoader::LoadError)
+  @last_yacht.class.should be(Yacht::LoadError)
   @last_yacht.message.should == message
 end
 
 When /^I try to use Yacht( with a whitelist)?$/ do |whitelist|
   @last_yacht = use_yacht(!!whitelist)
-end
-
-Then /^Yacht should raise an error$/ do
-  @last_yacht.class.should <= Exception
 end
 
 Then /^Yacht should not raise an error$/ do
@@ -20,9 +16,9 @@ module ErrorHandlingHelpers
   # If an error is raised, return it instead
   def use_yacht(whitelist=false)
     in_current_dir do
-      YachtLoader.dir = '.'
-      YachtLoader.environment = 'development'
-      YachtLoader.to_classy_struct(:apply_whitelist? => whitelist)
+      Yacht::Loader.dir = '.'
+      Yacht::Loader.environment = 'development'
+      Yacht::Loader.to_classy_struct(:apply_whitelist? => whitelist)
     end
   rescue Exception => e
     e

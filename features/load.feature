@@ -7,27 +7,27 @@ Feature: Load configuration settings
     Given a file named "base.yml" with:
     """
     default:
-      api_key: some_fake_key
-      partner_sites:
+      :api_key: some_fake_key
+      :partner_sites:
         - twitter
         - github
-      mail:
-        host: localhost
-        from: Our great company
+      :mail:
+        :host: localhost
+        :from: Our great company
     development:
-      api_key: some_development_key
+      :api_key: some_development_key
     production:
-      api_key: the_real_mccoy
-      partner_sites:
+      :api_key: the_real_mccoy
+      :partner_sites:
         - facebook
-      mail:
+      :mail:
         host: example.com
         reply-to: info@example.com
     """
 
   Scenario: Load from YAML
-    When I define the constant "Yacht" with environment: "development"
-    Then the constant "Yacht" should contain the following hash:
+    When I load Yacht with environment: "development"
+    Then Yacht should contain the following hash:
       """
         {
           :api_key       =>  'some_development_key',
@@ -45,10 +45,10 @@ Feature: Load configuration settings
   Scenario: Local overrides with local.yml
     Given a file named "local.yml" with:
       """
-      api_key: some_crazy_local_key
+      :api_key: some_crazy_local_key
       """
-      When I define the constant "Yacht" with environment: "development"
-      Then the constant "Yacht" should contain the following hash:
+      When I load Yacht with environment: "development"
+      Then Yacht should contain the following hash:
         """
           {
             :api_key       =>  'some_crazy_local_key',
@@ -66,10 +66,10 @@ Feature: Load configuration settings
   Scenario: Whitelisting with whitelist.yml
   Given a file named "whitelist.yml" with:
     """
-    - partner_sites
+    - :partner_sites
     """
-    When I define the constant "Yacht" with environment: "development" using a whitelist
-    Then the constant "Yacht" should contain the following hash:
+    When I define the constant "MyYacht" with environment: "development" using a whitelist
+    Then the constant "MyYacht" should contain the following hash:
       """
         {
           :partner_sites =>  [

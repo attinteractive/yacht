@@ -1,15 +1,7 @@
-# This file is named yacht.rb
-# so that Bundler will automatically load YachtLoader
-#
-# In the future, once we figure out how to integrate ClassyStruct,
-# YachtLoader will be renamed to Yacht
+require "yacht/base"
+require "yacht/loader"
+require "yacht/classy_struct"
+require "yacht/version"
 
-class Yacht
-end
-
-require "yacht_loader/base"
-require "yacht_loader/classy_struct"
-require "yacht_loader/version"
-
-require "yacht_loader/rails" if Object.const_defined?(:Rails)
+require "yacht/rails" if Object.const_defined?(:Rails)
 require 'monkeypatches/hash'

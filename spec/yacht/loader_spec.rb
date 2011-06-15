@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Yacht::Loader do
+  subject{ Yacht::Loader }
+
   let(:mock_base_config) do
     {
       'default' => {
@@ -37,7 +39,7 @@ describe Yacht::Loader do
       expect {
         subject.environment = 'nonexistent'
         subject.to_hash
-      }.to raise_error( YachtLoader::LoadError, /does not exist/)
+      }.to raise_error( Yacht::LoadError, /does not exist/)
     end
 
     context "with inheritance" do
@@ -111,7 +113,7 @@ describe Yacht::Loader do
       subject.stub(:load_config_file).with(:base).and_return(nil)
       expect {
         subject.base_config
-      }.to raise_error(YachtLoader::LoadError, "Couldn't load base config")
+      }.to raise_error(Yacht::LoadError, "Couldn't load base config")
     end
   end
 
@@ -148,7 +150,7 @@ describe Yacht::Loader do
 
       expect {
         subject.whitelist
-      }.to raise_error( YachtLoader::LoadError, "Couldn't load whitelist")
+      }.to raise_error( Yacht::LoadError, "Couldn't load whitelist")
     end
 
     it "expects load_config_file to return an Array" do
@@ -170,7 +172,7 @@ describe Yacht::Loader do
     it "raises an error if the config file is not found" do
       expect {
         subject.config_file_for(:foo)
-      }.to raise_error( YachtLoader::LoadError, "foo is not a valid config type")
+      }.to raise_error( Yacht::LoadError, "foo is not a valid config type")
     end
   end
 
@@ -186,7 +188,7 @@ describe Yacht::Loader do
 
       expect {
         subject.send(:load_config_file, "some file")
-      }.to raise_error( YachtLoader::LoadError, %r{ERROR: loading.+my_unique_error_message} )
+      }.to raise_error( Yacht::LoadError, %r{ERROR: loading.+my_unique_error_message} )
     end
 
     it "raises an error if :expect_to_load param is passed but does not match loaded object" do
@@ -194,7 +196,7 @@ describe Yacht::Loader do
       subject.stub(:_load_config_file).with('foo_file').and_return(Hash.new) # notice the underscore!
       expect {
         subject.send(:load_config_file, :foo, :expect_to_load => Array)
-      }.to raise_error( YachtLoader::LoadError, "foo_file must contain Array (got Hash)" )
+      }.to raise_error( Yacht::LoadError, "foo_file must contain Array (got Hash)" )
     end
 
   end

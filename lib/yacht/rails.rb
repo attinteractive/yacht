@@ -1,4 +1,4 @@
-class YachtLoader
+class Yacht::Loader
   class << self
     # use the current rails environment by default
     def environment

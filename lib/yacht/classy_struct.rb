@@ -1,6 +1,6 @@
 require 'classy_struct'
 
-class YachtLoader
+class Yacht::Loader
   class << self
     def classy_struct_instance
       @classy_struct_instance ||= ClassyStruct.new
@@ -10,10 +10,10 @@ class YachtLoader
       classy_struct_instance.new( self.to_hash(opts) )
     rescue StandardError => e
       # don't do anything to our own custom errors
-      if e.is_a? YachtLoader::LoadError
+      if e.is_a? Yacht::LoadError
         raise e
       else
-        raise LoadError.new("Error creating ClassyStruct: #{e.message}")
+        raise Yacht::LoadError.new("Error creating ClassyStruct: #{e.message}")
       end
     end
   end

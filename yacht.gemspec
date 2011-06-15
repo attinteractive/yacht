@@ -2,11 +2,11 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-require 'yacht_loader/version'
+require 'yacht/version'
 
 Gem::Specification.new do |s|
   s.name        = "yacht"
-  s.version     = YachtLoader::VERSION
+  s.version     = Yacht::VERSION
   s.authors     = ["Mani Tadayon", "Rico Rodriquez Collins"]
   s.description = "Yacht is Yet Another Configuration Helper Tool."
   s.summary     = "yacht-#{s.version}"
