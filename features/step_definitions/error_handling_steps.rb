@@ -7,10 +7,6 @@ When /^I try to use Yacht( with a whitelist)?$/ do |whitelist|
   @last_yacht = use_yacht(!!whitelist)
 end
 
-Then /^Yacht should raise an error$/ do
-  @last_yacht.class.should <= Exception
-end
-
 Then /^Yacht should not raise an error$/ do
   @last_yacht.class.should_not <= Exception
 end
