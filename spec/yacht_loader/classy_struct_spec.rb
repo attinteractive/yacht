@@ -1,24 +1,23 @@
 require 'spec_helper'
 
-describe "to_classy_struct" do
-  before do
-    conjure_config_file_from_prefix("base")
-    conjure_config_file_from_prefix("local")
-    conjure_config_file_from_prefix("whitelist")
-
-    YachtLoader.environment = 'an_environment'
+describe :classy_struct_instance do
+  it "should create a new ClassyStruct" do
+    ClassyStruct.should_receive(:new)
+    YachtLoader.classy_struct_instance
   end
+end
 
+describe :to_classy_struct do
   it "creates a ClassyStruct based on to_hash" do
-    Yacht = YachtLoader.to_classy_struct
-    Yacht.dog.should == "terrier"
+    YachtLoader.stub(:to_hash).and_return(:foo => 'bar')
+    YachtLoader.to_classy_struct.foo.should == "bar"
   end
 
   # ClassyStruct improves performance by adding accessors to the instance object
   # If the instance is not reused, there is no advantage to ClassyStruct over OpenStruct
   it "reuses the instance of ClassyStruct on subsequent calls" do
-    first_obj = YachtLoader.classy_struct_instance
-    second_obj = YachtLoader.classy_struct_instance
+    first_obj   = YachtLoader.classy_struct_instance
+    second_obj  = YachtLoader.classy_struct_instance
 
     first_obj.object_id.should == second_obj.object_id.should
   end

@@ -53,31 +53,22 @@ class YachtLoader
     end
 
     def local_config
-      load_config_file(:local, :require_presence? => false) || {}
+      load_config_file(:local) || {}
     end
 
   protected
+    # Wrap the YAML.load for easier mocking
+    def _load_config_file(file_name)
+      YAML.load( File.read(file_name) ) if File.exists?(file_name)
+    end
+
+    # Load a config file with plenty of error-checking
     def load_config_file(file_type, opts={})
       # by default, expect a Hash to be loaded
       expected_class    = opts[:expect_to_load] || Hash
 
-      # by default, raise error if file missing or empty
-      presence_required = if opts.has_key?(:require_presence?)
-                            opts[:require_presence?]
-                          else
-                            true
-                          end
-
       file_name = self.config_file_for(file_type)
-
-      loaded =  if File.exists?(file_name)
-                  YAML.load( File.read(file_name) )
-                else
-                  nil
-                end
-
-      # an empty YAML file will be converted to boolean false
-      raise LoadError.new "#{file_name} cannot be empty" if presence_required && loaded === false
+      loaded    = self._load_config_file(file_name)
 
       # YAML contained the wrong type
       raise LoadError.new "#{file_name} must contain #{expected_class} (got #{loaded.class})" if loaded && !loaded.is_a?(expected_class)

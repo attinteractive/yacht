@@ -1,15 +1,102 @@
 require 'spec_helper'
 
 describe YachtLoader do
-  before(:each) do
-    # mock existence and content of files to avoid file system in specs
-    %w(base whitelist local).each do |prefix|
-      conjure_config_file_from_prefix(prefix)
+  let(:mock_base_config) do
+    {
+      'default' => {
+        :color_of_the_day   => 'orange',
+        :super_secret_info  => 'swordfish'
+      },
+      'wacky' => {
+        :color_of_the_day   => 'purple',
+        :super_secret_info  => 'mackerel',
+      }
+    }
+  end
+
+  describe :to_hash do
+    before do
+      YachtLoader.stub(:base_config).and_return(mock_base_config)
+      YachtLoader.stub(:local_config).and_return({})
+      YachtLoader.stub(:whitelist).and_return([:color_of_the_day])
     end
 
-    # stub bad config files to check error handling
-    %w(empty_whitelist invalid_whitelist empty_local invalid_local).each do |baddie|
-      conjure_bad_config_file_from_prefix(baddie)
+    it "returns all keys by default" do
+      YachtLoader.to_hash.should  == mock_base_config['default']
+    end
+
+    it "only returns keys included in whitelist when :apply_whitelist? option is true" do
+      YachtLoader.to_hash(:apply_whitelist? => true).should  == {:color_of_the_day => 'orange'}
+    end
+
+    it "allows selection of the environment by passing an :env param" do
+      YachtLoader.to_hash(:env => 'wacky').should  == mock_base_config['wacky']
+    end
+
+    it "raises an error if an environment is requested that doesn't exist" do
+      expect {
+        YachtLoader.environment = 'nonexistent'
+        YachtLoader.to_hash
+      }.to raise_error( YachtLoader::LoadError, /does not exist/)
+    end
+
+    context "with inheritance" do
+      let(:mock_base_config_with_inheritance) do
+        {
+          'default' => {
+            :doggies   => {
+              'lassie'  => 'nice',
+              'cujo'    => 'mean'
+            }
+          },
+          'papa'    => {
+            :use_ssl? => false,
+            :doggies  => {
+              'benji'   => 'smart'
+            }
+          },
+          'kid'     => {
+            '_parent' => 'papa',
+            :doggies   => {
+              'cerberus'   => '3-headed'
+            }
+          }
+        }
+      end
+
+      before do
+        YachtLoader.stub(:base_config).and_return(mock_base_config_with_inheritance)
+        YachtLoader.environment = 'kid'
+      end
+
+      it "transfer values from _parent environment if _parent is set" do
+        YachtLoader.to_hash[:use_ssl?].should be_false
+      end
+
+      it "merges the hashes recursively" do
+        YachtLoader.to_hash[:doggies].should == {
+          'lassie'  => 'nice',
+          'cujo'    => 'mean',
+          'benji'   => 'smart',
+          'cerberus'   => '3-headed'
+        }
+      end
+    end
+  end
+
+  describe :all do
+    it "merges configuration for named environment onto defaults" do
+      YachtLoader.stub(:base_config).and_return({
+        'default' => {
+          :color_of_the_day => 'orange',
+        },
+        'wacky' => {
+          :color_of_the_day => 'purple',
+        }
+      })
+
+      YachtLoader.environment = 'wacky'
+      YachtLoader.to_hash[:color_of_the_day].should == 'purple'
     end
   end
 
@@ -30,128 +117,44 @@ describe YachtLoader do
 
   describe :local_config do
     it "calls load_config_file" do
-      YachtLoader.should_receive(:load_config_file).with(:local, :require_presence? => false).and_return('local_foo')
+      YachtLoader.should_receive(:load_config_file).with(:local).and_return('local_foo')
 
       YachtLoader.local_config
     end
 
     it "returns an empty hash if load_config_file returns nil" do
-      YachtLoader.stub(:load_config_file).with(:local, :require_presence? => false).and_return(nil)
+      YachtLoader.stub(:load_config_file).with(:local).and_return(nil)
+      YachtLoader.local_config.should == {}
+    end
+
+    # Handling of empty local.yml file
+    # YAML.load("")
+    # => false
+    it "returns an empty hash if load_config_file returns false" do
+      YachtLoader.stub(:load_config_file).with(:local).and_return(false)
       YachtLoader.local_config.should == {}
     end
   end
 
-  context "whitelist" do
-    it "loads keys into an Array" do
-      YachtLoader.whitelist.should == ["defaultkey", "hashkey"]
-    end
+  describe :whitelist do
+    # before do
+    #   YachtLoader.stub(:base_config).and_return(mock_base_config)
+    #   YachtLoader.stub(:local_config).and_return({})
+    #   YachtLoader.stub(:whitelist).and_return([:color_of_the_day])
+    # end
 
-    it "returns all keys by default, ignoring whitelist" do
-      YachtLoader.environment = 'default'
-      YachtLoader.to_hash.keys.should include("defaultkey", "hashkey")
-    end
+    it "raises an error if load_config_file returns nil" do
+      YachtLoader.stub(:load_config_file).with(:whitelist, :expect_to_load => Array).and_return(nil)
 
-    it "only returns keys included in whitelist when :apply_whitelist? option is true" do
-      YachtLoader.environment = 'default'
-      YachtLoader.to_hash(:apply_whitelist? => true).keys.should  == ["defaultkey", "hashkey"]
-    end
-
-    context "config file" do
-      it "raises an error if missing and whitelist is applied" do
-        banish_config_file_from_prefix('whitelist')
-
-        expect {
-          YachtLoader.to_hash(:apply_whitelist? => true)
-        }.to raise_error( YachtLoader::LoadError, /Couldn't load whitelist/)
-      end
-
-      it "raises an error if empty and whitelist is applied" do
-        conjure_config_file_from_prefix( :whitelist, File.read('empty_whitelist_config_file') )
-
-        expect {
-          YachtLoader.to_hash(:apply_whitelist? => true)
-        }.to raise_error( YachtLoader::LoadError, /whitelist.+ cannot be empty/)
-      end
-
-      it "raises an error if invalid and whitelist is applied" do
-        conjure_config_file_from_prefix( :whitelist, File.read('invalid_whitelist_config_file') )
-
-        expect {
-          YachtLoader.to_hash(:apply_whitelist? => true)
-        }.to raise_error( YachtLoader::LoadError, /whitelist.+ must contain Array/)
-      end
-    end
-  end
-
-  context "checks environment and sets sensible defaults" do
-    it "sets the environment to 'default'" do
-      YachtLoader.environment.should == "default"
-    end
-
-    it "allows setting the environment by passing an option to `to_hash`" do
-      YachtLoader.to_hash(:env => 'a_child_environment')
-      YachtLoader.environment.should == 'a_child_environment'
-    end
-
-
-    it "raises an error if an environment is requested that doesn't exist" do
       expect {
-        YachtLoader.environment = 'nonexistent'
-        YachtLoader.to_hash
-      }.to raise_error( YachtLoader::LoadError, /does not exist/)
+        YachtLoader.whitelist
+      }.to raise_error( YachtLoader::LoadError, "Couldn't load whitelist")
     end
 
-    it "merges configuration for named environment onto defaults" do
-      YachtLoader.environment = 'an_environment'
-      YachtLoader.to_hash['defaultkey'].should == 'defaultvalue'
-      YachtLoader.to_hash['name'].should == 'an_environment'
-    end
-  end
+    it "expects load_config_file to return an Array" do
+      YachtLoader.should_receive(:load_config_file).with(:whitelist, :expect_to_load => Array).and_return([])
 
-  context "handles child environment" do
-    before do
-      YachtLoader.environment = 'a_child_environment'
-    end
-
-    it "merges child onto the parent it names" do
-      YachtLoader.to_hash['dog'].should == 'terrier'
-    end
-
-    it "merges the hashes recursively" do
-      child = YachtLoader.to_hash['hashkey']
-
-      child['foo'].should == 'kung'
-      child['baz'].should == 'yay'
-      child['xyzzy'].should == 'thud'
-    end
-  end
-
-  context "handling of local config file" do
-    before do
-      YachtLoader.environment = 'an_environment'
-    end
-
-    it "merges values onto named environment and defaults" do
-      YachtLoader.to_hash['defaultkey'].should == 'defaultvalue'
-      YachtLoader.to_hash['name'].should == 'an_environment'
-      YachtLoader.to_hash['localkey'].should == 'localvalue'
-    end
-
-    it "uses base config if empty" do
-      conjure_config_file_from_prefix(:local, File.read('empty_local_config_file'))
-
-      File.should_not_receive(:read).with('local_config_file')
-
-      YachtLoader.send(:local_config).should == {}
-      YachtLoader.to_hash['defaultkey'].should == 'defaultvalue'
-      YachtLoader.to_hash['name'].should == 'an_environment'
-    end
-
-    it "raises an error if invalid" do
-      conjure_config_file_from_prefix( :local, File.read('invalid_local_config_file') )
-      expect {
-        YachtLoader.to_hash
-      }.to raise_error( YachtLoader::LoadError, %r{local.yml must contain Hash})
+      YachtLoader.whitelist
     end
   end
 
@@ -173,9 +176,9 @@ describe YachtLoader do
 
   describe :load_config_file do
     it "loads the specified file" do
-      conjure_config_file_from_prefix("base", "some contents")
-
-      YachtLoader.send(:load_config_file, "base", :expect_to_load => String).should == "some contents"
+      YachtLoader.stub(:config_file_for).with(:base).and_return('base_foo')
+      YachtLoader.stub(:_load_config_file).with('base_foo').and_return('base_bar')
+      YachtLoader.send(:load_config_file, :base, :expect_to_load => String).should == "base_bar"
     end
 
     it "raises an error if opening the file leads to an exception" do
@@ -184,6 +187,21 @@ describe YachtLoader do
       expect {
         YachtLoader.send(:load_config_file, "some file")
       }.to raise_error( YachtLoader::LoadError, %r{ERROR: loading.+my_unique_error_message} )
+    end
+
+    it "raises an error if :expect_to_load param is passed but does not match loaded object" do
+      YachtLoader.stub(:config_file_for).with(:foo).and_return('foo_file')
+      YachtLoader.stub(:_load_config_file).with('foo_file').and_return(Hash.new) # notice the underscore!
+      expect {
+        YachtLoader.send(:load_config_file, :foo, :expect_to_load => Array)
+      }.to raise_error( YachtLoader::LoadError, "foo_file must contain Array (got Hash)" )
+    end
+
+  end
+
+  context "checks environment and sets sensible defaults" do
+    it "sets the environment to 'default'" do
+      YachtLoader.environment.should == "default"
     end
   end
 end
