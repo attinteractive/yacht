@@ -15,8 +15,8 @@ require 'yacht'
 
 RSpec.configure do |config|
   config.after :each do
-    YachtLoader.environment = nil
-    YachtLoader.dir         = nil
-    YachtLoader.instance_variable_set(:@config_file_names, nil)
+    Yacht::Loader.environment = nil
+    Yacht::Loader.dir         = nil
+    Yacht::Loader.instance_variable_set(:@config_file_names, nil)
   end
 end
