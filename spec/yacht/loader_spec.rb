@@ -207,3 +207,9 @@ describe Yacht::Loader do
     end
   end
 end
+
+describe YachtLoader do
+  it "should alias YachtLoader to Yacht::Loader for backwards compatibility" do
+    ::YachtLoader.should == Yacht::Loader
+  end
+end

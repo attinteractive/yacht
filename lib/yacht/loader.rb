@@ -93,4 +93,8 @@ class Yacht::Loader
       parent.deep_merge(config[env])
     end
   end
+
 end
+
+# Alias for Yacht::Loader for backwards compatibility
+Object.const_set(:YachtLoader, Yacht::Loader)
