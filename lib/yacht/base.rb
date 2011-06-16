@@ -4,7 +4,11 @@ class Yacht < BasicObject
 
   class << self
     def [](key)
-      Loader.to_hash[key]
+      self._hash[key]
+    end
+
+    def _hash
+      @_hash ||= Loader.to_hash
     end
   end
 end

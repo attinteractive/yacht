@@ -49,3 +49,33 @@ describe Yacht::Loader do
   end
 
 end
+
+describe Yacht do
+  subject { Yacht }
+  after do
+    Yacht.instance_variable_set(:@_hash, nil)
+    Yacht.instance_variable_set(:@_classy_struct, nil)
+  end
+
+  context "just like a classy struct instance" do
+    it "should retrieve values by key" do
+      Yacht::Loader.stub(:to_hash).and_return(:foo => 'bar')
+
+      Yacht.foo.should == 'bar'
+    end
+
+    it "should return nil for nonexistent keys" do
+      Yacht::Loader.stub(:to_hash).and_return(:foo => 'bar')
+
+      Yacht.snafu.should be_nil
+    end
+
+    it "should handles nested hashes" do
+      Yacht::Loader.stub(:to_hash).and_return({:foo => {:bar => 'baz'}})
+
+      Yacht.foo.to_hash.should  == {:bar => 'baz'}
+      Yacht.foo.bar.should      == 'baz'
+      Yacht.foo.fu.should       be_nil
+    end
+  end
+end
