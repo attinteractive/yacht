@@ -51,7 +51,6 @@ describe Yacht::Loader do
 end
 
 describe Yacht do
-  subject { Yacht }
   after do
     Yacht.instance_variable_set(:@_hash, nil)
     Yacht.instance_variable_set(:@_classy_struct, nil)

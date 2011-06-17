@@ -86,8 +86,8 @@ Feature: Load configuration settings
     """
     - :partner_sites
     """
-    When I use Yacht to generate a javascript file with environment: "development"
-    Then the file "Yacht.js" should contain:
+    When I use Yacht to generate a javascript file with environment: "development" in directory: "js"
+    Then the file "js/Yacht.js" should contain:
     """
     ;var Yacht = {"partner_sites":["twitter","github"]};
     """

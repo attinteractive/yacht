@@ -12,11 +12,18 @@ class Yacht::Loader
     end
 
     def to_js_file(opts={})
-      write_file('Yacht.js', to_js_string(opts))
+       # by default, set :dir to 'public/javascripts' in Rails
+      opts[:dir] ||= Rails.root.join('public', 'javascripts').to_s if defined?(Rails)
+
+      raise Yacht::LoadError.new("Must provide :dir option") if opts[:dir].nil?
+
+      write_file(opts[:dir], 'Yacht.js', to_js_string(opts))
     end
 
-    def write_file(name, contents)
-      File.open name, 'w' do |file|
+    def write_file(dir, name, contents)
+      FileUtils.mkdir_p dir
+
+      File.open File.join(dir, name), 'w' do |file|
         file.write(contents)
       end
     end

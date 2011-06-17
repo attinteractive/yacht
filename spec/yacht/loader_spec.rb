@@ -204,13 +204,34 @@ describe Yacht::Loader do
     end
   end
 
+  describe :_load_config_file do
+    it "returns nil if file does not exist" do
+      File.stub(:exists?).with('some_file').and_return(false)
+      subject.send(:_load_config_file, 'some_file').should be_nil
+    end
+
+    it "opens the file using YAML.load if the file exists" do
+      File.stub(:exists?).with('some_file').and_return(true)
+      File.stub(:read).with('some_file').and_return('some contents')
+      YAML.should_receive(:load).with('some contents')
+
+      subject.send(:_load_config_file, 'some_file')
+    end
+  end
+
   describe :full_file_path_for_config do
     it "raises an error if dir is blank" do
-      Yacht::Loader.stub(:dir).and_return(nil)
+      subject.stub(:dir).and_return(nil)
 
       expect {
-        Yacht::Loader.full_file_path_for_config(:base)
+        subject.full_file_path_for_config(:base)
       }.to raise_error( Yacht::LoadError, "No directory set" )
+    end
+
+    it "returns the full path to the YAML file for the given config type" do
+      subject.stub(:dir).and_return('/full/path')
+
+      subject.full_file_path_for_config(:foo).should == '/full/path/foo.yml'
     end
   end
 
