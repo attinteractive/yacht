@@ -1,6 +1,11 @@
+Given /^I set Yacht's YAML directory to: "([^"]*)"$/ do |dir|
+  in_current_dir do
+    Yacht::Loader.dir = dir
+  end
+end
+
 When /^I define the constant "([^"]*)" with environment: "([^"]*)"( using a whitelist)?$/ do |constant_name, env, whitelist|
   in_current_dir do
-    Yacht::Loader.dir = '.'
     Yacht::Loader.environment = env
     Object.const_set( constant_name, Yacht::Loader.to_classy_struct(:apply_whitelist? => whitelist ) )
   end
@@ -15,7 +20,6 @@ Then /^the constant "([^"]*)" should contain the following hash:$/ do |constant_
 end
 
 When /^I load Yacht with environment: "([^"]*)"$/ do |env|
-  Yacht::Loader.dir = '.'
   Yacht::Loader.environment = env
 end
 

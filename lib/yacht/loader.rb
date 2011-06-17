@@ -7,12 +7,11 @@ class Yacht::Loader
     end
     attr_writer :environment
 
-    def dir
-      @dir ||= File.join( File.dirname(__FILE__), 'yacht')
-    end
-    attr_writer :dir
+    attr_accessor :dir
 
     def full_file_path_for_config(config_type)
+      raise Yacht::LoadError.new "No directory set" unless dir
+
       File.join( self.dir, "#{config_type}.yml" )
     end
 

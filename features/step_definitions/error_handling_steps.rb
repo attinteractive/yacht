@@ -16,7 +16,6 @@ module ErrorHandlingHelpers
   # If an error is raised, return it instead
   def use_yacht(whitelist=false)
     in_current_dir do
-      Yacht::Loader.dir = '.'
       Yacht::Loader.environment = 'development'
       Yacht::Loader.to_classy_struct(:apply_whitelist? => whitelist)
     end

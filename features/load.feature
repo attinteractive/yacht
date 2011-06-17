@@ -4,7 +4,7 @@ Feature: Load configuration settings
   I want to load configuration settings from an external source like a YAML file
 
   Background:
-    Given a file named "base.yml" with:
+    Given a file named "yacht/base.yml" with:
     """
     default:
       :api_key: some_fake_key
@@ -24,6 +24,7 @@ Feature: Load configuration settings
         host: example.com
         reply-to: info@example.com
     """
+    And I set Yacht's YAML directory to: "yacht"
 
   Scenario: Load from YAML
     When I load Yacht with environment: "development"
@@ -43,7 +44,7 @@ Feature: Load configuration settings
       """
 
   Scenario: Local overrides with local.yml
-    Given a file named "local.yml" with:
+    Given a file named "yacht/local.yml" with:
       """
       :api_key: some_crazy_local_key
       """
@@ -64,7 +65,7 @@ Feature: Load configuration settings
         """
 
   Scenario: Whitelisting with whitelist.yml
-    Given a file named "whitelist.yml" with:
+    Given a file named "yacht/whitelist.yml" with:
     """
     - :partner_sites
     """
@@ -81,7 +82,7 @@ Feature: Load configuration settings
 
   @js
   Scenario: Generate a Yacht.js file
-    Given a file named "js_keys.yml" with:
+    Given a file named "yacht/js_keys.yml" with:
     """
     - :partner_sites
     """

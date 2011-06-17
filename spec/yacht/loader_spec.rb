@@ -16,6 +16,9 @@ describe Yacht::Loader do
     }
   end
 
+  describe :dir do
+  end
+
   describe :to_hash do
     before do
       subject.stub(:base_config).and_return(mock_base_config)
@@ -96,6 +99,7 @@ describe Yacht::Loader do
           :color_of_the_day => 'purple',
         }
       })
+      subject.stub(:local_config).and_return({})
 
       subject.environment = 'wacky'
       subject.to_hash[:color_of_the_day].should == 'purple'
@@ -198,7 +202,16 @@ describe Yacht::Loader do
         subject.send(:load_config_file, :foo, :expect_to_load => Array)
       }.to raise_error( Yacht::LoadError, "foo_file must contain Array (got Hash)" )
     end
+  end
 
+  describe :full_file_path_for_config do
+    it "raises an error if dir is blank" do
+      Yacht::Loader.stub(:dir).and_return(nil)
+
+      expect {
+        Yacht::Loader.full_file_path_for_config(:base)
+      }.to raise_error( Yacht::LoadError, "No directory set" )
+    end
   end
 
   context "checks environment and sets sensible defaults" do
