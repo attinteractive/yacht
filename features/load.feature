@@ -64,7 +64,7 @@ Feature: Load configuration settings
         """
 
   Scenario: Whitelisting with whitelist.yml
-  Given a file named "whitelist.yml" with:
+    Given a file named "whitelist.yml" with:
     """
     - :partner_sites
     """
@@ -78,3 +78,15 @@ Feature: Load configuration settings
                               ]
         }
       """
+
+  @js
+  Scenario: Generate a Yacht.js file
+    Given a file named "js_keys.yml" with:
+    """
+    - :partner_sites
+    """
+    When I use Yacht to generate a javascript file with environment: "development"
+    Then the file "Yacht.js" should contain:
+    """
+    ;var Yacht = {"partner_sites":["twitter","github"]};
+    """

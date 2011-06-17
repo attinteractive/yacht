@@ -23,7 +23,7 @@ class Yacht::Loader
     end
 
     def valid_config_types
-      %w( base local whitelist )
+      %w( base local whitelist js_keys )
     end
 
     def all

@@ -1,6 +1,7 @@
 require "yacht/base"
 require "yacht/loader"
 require "yacht/classy_struct"
+require "yacht/javascript"
 require "yacht/version"
 
 require "yacht/rails" if Object.const_defined?(:Rails)
