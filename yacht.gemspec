@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency "classy_struct", ">= 0.3.2"
   s.add_dependency "json"
 
-  s.add_development_dependency "gherkin", '~> 2.3.0'
+  s.add_development_dependency "gherkin", '>= 2.4.0'
   s.add_development_dependency "cucumber", '>= 0.10.0'
   s.add_development_dependency 'aruba'
   s.add_development_dependency "rspec", '>= 2.6.0'
