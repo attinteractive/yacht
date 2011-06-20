@@ -12,7 +12,7 @@ class Yacht::Loader
     end
 
     def to_js_file(opts={})
-       # by default, set :dir to 'public/javascripts' in Rails
+      # by default, set :dir to 'public/javascripts' in Rails
       opts[:dir] ||= Rails.root.join('public', 'javascripts').to_s if defined?(Rails)
 
       raise Yacht::LoadError.new("Must provide :dir option") if opts[:dir].nil?
