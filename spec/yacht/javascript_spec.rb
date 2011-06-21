@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Yacht::Loader do
   subject{ Yacht::Loader }
+
   let(:mock_js_comment) {
     ";\n"                                     +
     "// ==================================\n" +
@@ -11,6 +12,10 @@ describe Yacht::Loader do
     "// = js_keys.yml                    =\n" +
     "// =                                =\n" +
     "// ==================================\n"
+  }
+
+  let(:mock_js_string) {
+    ';var Yacht = {"foo":"bar"};'
   }
 
   describe :to_js_string do
@@ -30,9 +35,6 @@ describe Yacht::Loader do
   end
 
   describe :to_js_file do
-    let(:mock_js_string) {
-      ';var Yacht = {"foo":"bar"};'
-    }
     before do
       subject.stub(:to_js_string).and_return(mock_js_string)
     end
@@ -47,16 +49,6 @@ describe Yacht::Loader do
       expect {
         subject.to_js_file
       }.to raise_error(Yacht::LoadError, "Must provide :dir option")
-    end
-
-    it "should set the :dir option to 'public/javascripts' by default when Rails is defined" do
-      Rails = mock('rails')
-      Rails.stub_chain(:root, :join).with('public', 'javascripts').and_return('/path/to/rails/app/public/javascripts')
-
-      subject.stub(:js_comment).and_return("")
-      subject.should_receive(:write_file).with('/path/to/rails/app/public/javascripts', 'Yacht.js', mock_js_string)
-
-      subject.to_js_file
     end
   end
 
@@ -100,5 +92,44 @@ describe Yacht::Loader do
 
       subject.js_keys
     end
+  end
+
+  context "Rails is defined" do
+    before do
+      subject.stub(:to_js_string).and_return(mock_js_string)
+      Rails = mock('rails')
+      Rails.stub_chain(:root, :join).with('public', 'javascripts').and_return('/path/to/rails/app/public/javascripts')
+      # TODO: must be a better way to mock ActionController::Base
+      #       this does NOT work:
+      #         ActionController::Base = mock 'ActionController::Base'
+      class ::ActionController
+        class Base
+          def self.before_filter(*args)
+          end
+        end
+      end
+    end
+
+    it "should set the :dir option to 'public/javascripts' by default" do
+      subject.stub(:js_comment).and_return("")
+      subject.should_receive(:write_file).with('/path/to/rails/app/public/javascripts', 'Yacht.js', mock_js_string)
+
+      subject.to_js_file
+    end
+
+    it "should add a before filter to ActionController::Base in the development environment" do
+      Rails.stub_chain(:env, :development?).and_return(true)
+      ActionController::Base.should_receive(:before_filter).with(:generate_yacht_js_file)
+
+      load 'monkeypatches/rails/controller_extension.rb'
+    end
+
+    it "should not add a before filter to ActionController::Base outside the development environment" do
+      Rails.stub_chain(:env, :development?).and_return(false)
+      ActionController::Base.should_not_receive(:before_filter).with(:generate_yacht_js_file)
+
+      load 'monkeypatches/rails/controller_extension.rb'
+    end
+
   end
 end
