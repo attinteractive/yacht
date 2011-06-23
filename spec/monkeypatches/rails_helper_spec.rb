@@ -17,15 +17,21 @@ describe 'Yacht::RailsHelper' do
     Rails             = stub('Rails')
 
     require "monkeypatches/rails_helper"
+
+    dummy_class.send(:include, Yacht::RailsHelper)
   end
 
   describe :yacht_js_snippet do
-    it "should return a snippet inside a script tag for the current Rails environment" do
-      Rails.should_receive(:env).and_return('my_awesome_env')
-      Yacht::Loader.stub(:to_js_snippet).with(:env => 'my_awesome_env').and_return(mock_js_string)
+    it "should return a snippet inside a script tag using the current Rails environment by default" do
+      Yacht::Loader.stub(:to_js_snippet).and_return(mock_js_string)
 
-      dummy_class.send(:include, Yacht::RailsHelper)
-      dummy_class.new.yacht_js_snippet.should == "<script type=\"text/javascript\">;var Yacht = {\"foo\":\"bar\"};</script>"
+      dummy_class.new.yacht_js_snippet.should == "<script type=\"text/javascript\">#{mock_js_string}</script>"
+    end
+
+    it "should pass options to Yacht::Loader#to_js_snippet" do
+      Yacht::Loader.should_receive(:to_js_snippet).with(:foo => 'bar').and_return("")
+
+      dummy_class.new.yacht_js_snippet(:foo => 'bar')
     end
 
     it "should add yacht_js_snippet to ApplicationHelper" do
