@@ -6,7 +6,7 @@ require "yacht/version"
 
 if Object.const_defined?(:Rails)
   require "yacht/rails"
-  require "monkeypatches/rails/controller_extension"
+  require "monkeypatches/rails_helper"
 end
 
 require 'monkeypatches/hash'
