@@ -17,7 +17,6 @@ describe 'Yacht::RailsHelper' do
   }
 
   before do
-    ApplicationHelper = stub('ApplicationHelper').as_null_object
     Rails             = stub('Rails')
 
     require "monkeypatches/rails_helper"
@@ -42,8 +41,7 @@ describe 'Yacht::RailsHelper' do
     end
 
     it "should add yacht_js_snippet to ApplicationHelper" do
-      ApplicationHelper.should_receive(:send).with(:include, Yacht::RailsHelper)
-      load "monkeypatches/rails_helper.rb"
+      ApplicationHelper.should <= Yacht::RailsHelper
     end
   end
 end

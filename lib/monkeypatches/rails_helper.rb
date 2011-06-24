@@ -11,4 +11,7 @@ module Yacht::RailsHelper
   end
 end
 
-ApplicationHelper.send(:include, Yacht::RailsHelper)
+# TODO: use a Railtie to do this Rails-3-style
+module ApplicationHelper
+  include Yacht::RailsHelper
+end
