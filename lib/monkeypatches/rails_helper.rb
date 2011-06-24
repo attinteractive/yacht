@@ -7,9 +7,7 @@ module Yacht::RailsHelper
   #   yacht_js_snippet(:env => 'local_development')
   #   # => "<script type=\"text/javascript\">;var Yacht = {\"foo\":\"bar\"};</script>"
   def yacht_js_snippet(opts={})
-    '<script type="text/javascript">'   +
-      Yacht::Loader.to_js_snippet(opts) +
-    '</script>'
+    javascript_tag Yacht::Loader.to_js_snippet(opts)
   end
 end
 
