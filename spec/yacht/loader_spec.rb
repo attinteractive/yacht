@@ -38,13 +38,6 @@ describe Yacht::Loader do
       subject.to_hash(:env => 'wacky').should  == mock_base_config['wacky']
     end
 
-    it "raises an error if an environment is requested that doesn't exist" do
-      expect {
-        subject.environment = 'nonexistent'
-        subject.to_hash
-      }.to raise_error( Yacht::LoadError, /does not exist/)
-    end
-
     context "with inheritance" do
       let(:mock_base_config_with_inheritance) do
         {
@@ -87,6 +80,36 @@ describe Yacht::Loader do
         }
       end
     end
+
+    context "with inheritance when a parent is missing" do
+      let(:mock_base_config_with_inheritance) do
+        {
+          'default' => {
+            :doggies   => {
+              'lassie'  => 'nice',
+              'cujo'    => 'mean'
+            }
+          },
+          'kid'     => {
+            '_parent' => 'deadbeat_dad',
+            :doggies   => {
+              'cerberus'   => '3-headed'
+            }
+          }
+        }
+      end
+
+      before do
+        subject.stub(:base_config).and_return(mock_base_config_with_inheritance)
+        subject.environment = 'kid'
+      end
+
+      it "raises an error if an environment is requested whose parent doesn't exist" do
+        expect {
+          subject.to_hash
+        }.to raise_error( Yacht::LoadError, /does not exist/)
+      end
+    end
   end
 
   describe :all do
@@ -103,6 +126,21 @@ describe Yacht::Loader do
 
       subject.environment = 'wacky'
       subject.to_hash[:color_of_the_day].should == 'purple'
+    end
+
+    it "returns the defaults for environments that do not exist" do
+      subject.stub(:base_config).and_return({
+        'default' => {
+          :color_of_the_day => 'orange',
+        },
+        'wacky' => {
+          :color_of_the_day => 'purple',
+        }
+      })
+      subject.stub(:local_config).and_return({})
+
+      subject.environment = 'nerdy'
+      subject.to_hash.should == {:color_of_the_day => 'orange'}
     end
   end
 
