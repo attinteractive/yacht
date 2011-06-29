@@ -21,6 +21,13 @@ describe Yacht::Loader do
 
       subject.to_js_snippet.should == ';var Yacht = {"baz":"snafu"};'
     end
+
+    it "merges the hash passed with :merge" do
+      subject.stub(:to_hash).and_return(:foo => 'bar', :baz => 'snafu')
+      subject.stub(:js_keys).and_return(:baz)
+
+      subject.to_js_snippet(:merge => {:request_id => 123}).should == ';var Yacht = {"baz":"snafu","request_id":123};'
+    end
   end
 
   describe :js_keys do

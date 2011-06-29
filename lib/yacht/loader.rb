@@ -29,6 +29,9 @@ class Yacht::Loader
       chain_configs(base_config, self.environment).deep_merge(local_config)
     end
 
+    # @param [Hash] opts the options for creating the hash
+    # @option opts [String] :env environment to use from base.yml
+    # @option opts [Boolean] :apply_whitelist? (false) only include keys in whitelist.yml
     def to_hash(opts={})
      opts[:apply_whitelist?] ||= false unless opts.has_key?(:apply_whitelist?)
      self.environment = opts[:env] if opts.has_key?(:env)

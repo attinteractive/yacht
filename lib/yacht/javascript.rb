@@ -2,8 +2,13 @@ require 'json'
 
 class Yacht::Loader
   class << self
+    # Returns a string snippet that can be eval'd in javascript
+    #  or included in the DOM
+    # @param [Hash] opts the options to pass to to_hash
+    # @option opts [Hash] :merge ({}) hash to be merged into to_hash
     def to_js_snippet(opts={})
-      hash = to_hash(opts).slice(*js_keys)
+      hash_to_merge = opts.delete(:merge) || {}
+      hash          = to_hash(opts).slice(*js_keys).merge(hash_to_merge)
       ";var Yacht = #{hash.to_json};"
     end
 
