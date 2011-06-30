@@ -14,7 +14,9 @@ class Yacht::Loader
     end
 
     def config_file_for(config_type)
-      raise Yacht::LoadError.new "#{config_type} is not a valid config type" unless valid_config_types.include?(config_type.to_s)
+      if !valid_config_types.include?(config_type.to_s)
+        raise Yacht::LoadError.new "#{config_type} is not a valid config type"
+      end
 
       full_file_path_for_config(config_type)
     end
@@ -67,8 +69,9 @@ class Yacht::Loader
       file_name = self.config_file_for(file_type)
       loaded    = self._load_config_file(file_name)
 
-      # YAML contained the wrong type
-      raise Yacht::LoadError.new "#{file_name} must contain #{expected_class} (got #{loaded.class})" if loaded && !loaded.is_a?(expected_class)
+      if loaded && !loaded.is_a?(expected_class) # YAML contained the wrong type
+        raise Yacht::LoadError.new "#{file_name} must contain #{expected_class} (got #{loaded.class})"
+      end
 
       loaded
     rescue => e
