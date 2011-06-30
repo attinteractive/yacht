@@ -4,19 +4,17 @@ describe "Rails support" do
   subject { Yacht::Loader }
 
   before do
+    Rails = stub("Rails")
     Object.stub(:alias_method_chain).as_null_object
     require "yacht/rails"
     @yacht_dir = "/path/to/rails/config/yacht"
   end
 
   describe :environment do
-    before do
-      Rails = stub("Rails")
-    end
     it "uses the current rails environment by default" do
-      Rails.should_receive(:env)
+      Rails.should_receive(:env).and_return('awesome')
 
-      subject.environment
+      subject.environment.should == 'awesome'
     end
   end
 
@@ -43,7 +41,7 @@ describe "Rails support" do
       subject.stub(:all_without_rails_env).and_return(:foo => :bar)
 
       Rails.stub(:env).and_return(:awesome)
-      subject.all_with_rails_env.should == {:foo => :bar, :rails_env => :awesome}
+      subject.all_with_rails_env.should == {:foo => :bar, 'rails_env' => :awesome}
     end
 
     it "aliases all to all_without_rails_env" do

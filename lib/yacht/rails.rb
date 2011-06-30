@@ -15,7 +15,7 @@ class Yacht::Loader
 
     # Add current Rails environment to defined keys
     def all_with_rails_env
-      all_without_rails_env.merge(:rails_env => Rails.env)
+      all_without_rails_env.merge('rails_env' => Rails.env)
     end
     alias_method_chain :all, :rails_env
 
