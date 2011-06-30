@@ -38,7 +38,7 @@ First create two (or more) YAML files in the same directory to define your setti
         #   see https://gist.github.com/979804 for an explanation
         aws_key: bazbaz
 
-    # config/yacht/whitelist.yml (required)
+    # config/yacht/whitelist.yml (optional)
     # any keys specified here can be used as a whitelist filter:
     #   Yacht::Loader.to_hash(:apply_whitelist? => true)
     #   or
