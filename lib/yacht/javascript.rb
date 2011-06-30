@@ -13,9 +13,7 @@ class Yacht::Loader
     end
 
     def js_keys
-      load_config_file(:js_keys, :expect_to_load => Array) || begin
-        raise Yacht::LoadError.new("Couldn't load js_keys")
-      end
+      load_config_file(:js_keys, :expect_to_load => Array) || raise( Yacht::LoadError.new("Couldn't load js_keys") )
     end
   end
 end
