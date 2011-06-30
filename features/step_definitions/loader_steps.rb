@@ -13,10 +13,9 @@ end
 
 
 Then /^the constant "([^"]*)" should contain the following hash:$/ do |constant_name, stringified|
-  hash = eval(stringified)
-  Object.const_get(constant_name).to_hash.should == hash # don't forget to tack on to_hash to avoid weird errors
-                                                         # TODO: make ClassyStruct more Hash-like so
-                                                         # i t can be compared against hashes using `==`
+  # don't forget to tack on to_hash to avoid weird errors
+  # TODO: make ClassyStruct more Hash-like so it can be compared against hashes using `==`
+  stringified_hash_should_match( stringified, Object.const_get(constant_name).to_hash )
 end
 
 When /^I load Yacht with environment: "([^"]*)"$/ do |env|
@@ -24,9 +23,18 @@ When /^I load Yacht with environment: "([^"]*)"$/ do |env|
 end
 
 Then /^Yacht should contain the following hash:$/ do |stringified|
-  hash = eval(stringified)
-
   in_current_dir do
-    Yacht::Loader.to_hash.should == hash
+    stringified_hash_should_match(stringified, Yacht::Loader.to_hash)
   end
 end
+
+module LoaderHelpers
+  def stringified_hash_should_match(string, hash)
+    hash_from_string = eval(string)
+
+    in_current_dir do
+      hash_from_string.should == hash
+    end
+  end
+end
+World(LoaderHelpers)
