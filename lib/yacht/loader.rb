@@ -1,5 +1,3 @@
-# TODO: Rename YachtLoader to Yacht and somehow incorporate ClassyStruct
-
 class Yacht::Loader
   class << self
     def environment
@@ -78,7 +76,7 @@ class Yacht::Loader
       if e.is_a? Yacht::LoadError
         raise e
       else
-        # convert other errors to YachtLoader::Yacht::LoadError
+        # convert other errors to Yacht::LoadError
         raise Yacht::LoadError.new "ERROR: loading config file: '#{file_type}': #{e}"
       end
     end
