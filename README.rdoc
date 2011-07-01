@@ -22,10 +22,13 @@ Yacht is an application configuration gem that lets you define settings for mult
 
 === Step 1: YAML files
 
-First create two (or more) YAML files in the same directory to define your settings:
+First create one or more of the following YAML files in the same directory to define your settings:
 
     # config/yacht/base.yml (required)
     production:
+      public_info:
+        copyright_year: 2011
+        company_name: AT&T Interactive
       cdn_host: 1.2.3.4
       super_secret_info:
         aws_key: foofoo
@@ -47,7 +50,7 @@ First create two (or more) YAML files in the same directory to define your setti
     # NOTE: the whitelist is ignored when using Yacht.my_key or Yacht['my_key']
     #       you have to use Yacht::Loader#to_hash or
     #       Yacht::Loader#to_classy_struct to use the whitelist
-    - super_secret_info
+    - public_info
 
     # config/yacht/local.yml (optional)
     # any values set in local.yml will override values set in base.yml
