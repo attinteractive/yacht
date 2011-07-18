@@ -58,7 +58,7 @@ First create one or more of the following YAML files in the same directory to de
     production:
       cdn_host: localhost
 
-=== Step 2: Use `Yacht.my_key` or `Yacht['my_key']` in ruby
+=== Step 2: Use +Yacht.my_key+ or <tt>Yacht['my_key']</tt> in ruby
 
 * <b>Rails</b>:
     # now you can access any key set in your YAML files with:
@@ -75,7 +75,7 @@ First create one or more of the following YAML files in the same directory to de
 
 == Other features
 
-=== Yacht::Loader.to_js_snippet export to javascript
+=== +Yacht::Loader.to_js_snippet+ export to javascript
 If you would like to access values stored in Yacht inside of javascript, there is a helper for that. First, create a YAML file to tell Yacht which keys should be exported:
 
     # config/yacht/base_keys.yml
@@ -83,7 +83,7 @@ If you would like to access values stored in Yacht inside of javascript, there i
     # remember that any values exported to javascript will be visible to all visitors to your site
     - cookie_domain
 
-Then use `Yacht::Loader#to_js_snippet` to create a string that can be eval'd or included in the DOM:
+Then use +Yacht::Loader#to_js_snippet+ to create a string that can be eval'd or included in the DOM:
 
     Yacht::Loader.to_js_snippet
     # => ";var Yacht = {\"cookie_domain\":\"example.com\"};"
@@ -94,9 +94,9 @@ You can also add in extra values from outside of Yacht using the :merge option, 
     # => ";var Yacht = {\"cookie_domain\":\"example.com\",\"current_time\":\"06/29/2011\"};"
 
 
-=== yacht_js_snippet Rails helper
+=== +yacht_js_snippet+ Rails helper
 
-When using Yacht inside of a Rails application, you can use the yacht_js_snippet method to wrap the string from `Yacht::Loader#to_js_snippet` in a script tag using Rails' javascript_tag helper.
+When using Yacht inside of a Rails application, you can use the +yacht_js_snippet+ method to wrap the string from +Yacht::Loader#to_js_snippet+ in a script tag using Rails' +javascript_tag+ helper.
 
     Yacht.rails_env
     # => "development"  # Yacht automatically adds the current Rails environment in ruby
