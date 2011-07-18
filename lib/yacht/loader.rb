@@ -1,3 +1,5 @@
+require "yacht/hash_helper"
+
 class Yacht::Loader
   class << self
     def environment
@@ -26,7 +28,7 @@ class Yacht::Loader
     end
 
     def all
-      chain_configs(base_config, self.environment).deep_merge(local_config)
+      Yacht::HashHelper.deep_merge( chain_configs(base_config, self.environment), local_config )
     end
 
     # @param [Hash] opts the options for creating the hash
@@ -37,7 +39,7 @@ class Yacht::Loader
      self.environment = opts[:env] if opts.has_key?(:env)
 
      if opts[:apply_whitelist?]
-       all.slice(*whitelist)
+       Yacht::HashHelper.slice(all, *whitelist)
      else
        all
      end
@@ -93,7 +95,7 @@ class Yacht::Loader
                    config['default'] || {}
                  end
 
-        parent.deep_merge(config[env])
+        Yacht::HashHelper.deep_merge(parent, config[env])
       else
         config['default'] || {}
       end

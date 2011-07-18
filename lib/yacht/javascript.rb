@@ -1,3 +1,4 @@
+require "yacht/hash_helper"
 require 'json'
 
 class Yacht::Loader
@@ -8,7 +9,7 @@ class Yacht::Loader
     # @option opts [Hash] :merge ({}) hash to be merged into to_hash
     def to_js_snippet(opts={})
       hash_to_merge = opts.delete(:merge) || {}
-      hash          = to_hash(opts).slice(*js_keys).merge(hash_to_merge)
+      hash          = Yacht::HashHelper.slice(to_hash(opts), *js_keys).merge(hash_to_merge)
       ";var Yacht = #{hash.to_json};"
     end
 

@@ -5,15 +5,17 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup
 
-# ==============
-# = SimpleCov! =
-# ==============
-require 'simplecov'
-SimpleCov.start
-
 require 'yacht'
 
 RSpec.configure do |config|
+  config.before :all do
+    # ==============
+    # = SimpleCov! =
+    # ==============
+    require 'simplecov'
+    SimpleCov.start
+  end
+
   config.after :each do
     Yacht::Loader.environment = nil
     Yacht::Loader.dir         = nil
