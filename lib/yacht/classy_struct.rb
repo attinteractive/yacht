@@ -1,6 +1,6 @@
 require 'classy_struct'
 
-class Yacht < BasicObject
+class Yacht
   class Loader
     class << self
       def classy_struct_instance

@@ -1,4 +1,4 @@
-class Yacht < BasicObject
+class Yacht
   class LoadError < ::StandardError
   end
 
