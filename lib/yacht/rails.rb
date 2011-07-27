@@ -17,7 +17,9 @@ class Yacht::Loader
     def all_with_rails_env
       all_without_rails_env.merge('rails_env' => Rails.env)
     end
-    alias_method_chain :all, :rails_env
+    # alias_method_chain is wonky in rspec with ruby 1.8.7
+    alias_method :all_without_rails_env, :all
+    alias_method :all, :all_with_rails_env
 
   end
 end

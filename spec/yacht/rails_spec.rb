@@ -43,10 +43,5 @@ describe "Rails support" do
       Rails.stub(:env).and_return(:awesome)
       subject.all_with_rails_env.should == {:foo => :bar, 'rails_env' => :awesome}
     end
-
-    it "aliases all to all_without_rails_env" do
-      Object.should_receive(:alias_method_chain).with(:all, :rails_env)
-      load "yacht/rails.rb"
-    end
   end
 end
