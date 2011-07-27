@@ -1,7 +1,10 @@
 ## [0.2.7](https://github.com/attinteractive/yacht/compare/0.2.6...0.2.7)
 
 ### Bugfixes
-* Compatibility with ruby 1.8.7 ([#13](https://github.com/attinteractive/yacht/pull/13) Mani Tadayon)
+* Compatibility with ruby 1.8.7 ([#16](https://github.com/attinteractive/yacht/issues/16) Mani Tadayon)
+
+### New features
+* Don't monkeypatch Hash, use a module instead ([#11](https://github.com/attinteractive/yacht/issues/11) Mani Tadayon)
 
 ## [0.2.6](https://github.com/attinteractive/yacht/compare/0.2.5...0.2.6)
 
