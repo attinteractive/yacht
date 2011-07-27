@@ -1,3 +1,8 @@
+## [0.2.7](https://github.com/attinteractive/yacht/compare/0.2.6...0.2.7)
+
+### Bugfixes
+* Compatibility with ruby 1.8.7 ([#13](https://github.com/attinteractive/yacht/pull/13) Mani Tadayon)
+
 ## [0.2.6](https://github.com/attinteractive/yacht/compare/0.2.5...0.2.6)
 
 ### Bugfixes
