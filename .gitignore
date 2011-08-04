@@ -1,7 +1,9 @@
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
 coverage
 tmp
 doc
 .yardoc
-*.gem
 .DS_Store
-Gemfile.lock
