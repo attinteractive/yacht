@@ -55,8 +55,7 @@ First create one or more of the following YAML files in the same directory to de
     # config/yacht/local.yml (optional)
     # any values set in local.yml will override values set in base.yml
     # useful for development and testing
-    production:
-      cdn_host: localhost
+    cdn_host: localhost
 
 === Step 2: Use +Yacht.my_key+ or <tt>Yacht['my_key']</tt> in ruby
 
