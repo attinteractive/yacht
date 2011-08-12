@@ -77,7 +77,7 @@ First create one or more of the following YAML files in the same directory to de
 === <tt>Yacht::Loader.to_js_snippet</tt> export to javascript
 If you would like to access values stored in Yacht inside of javascript, there is a helper for that. First, create a YAML file to tell Yacht which keys should be exported:
 
-    # config/yacht/base_keys.yml
+    # config/yacht/js_keys.yml
     # only keys listed here will be available in javascript
     # remember that any values exported to javascript will be visible to all visitors to your site
     - cookie_domain
