@@ -1,7 +1,5 @@
 require "yacht/version"
 
-# require 'monkeypatches/hash'
-
 require "yacht/base"
 require "yacht/loader"
 
