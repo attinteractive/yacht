@@ -116,4 +116,4 @@ Yacht works with ruby 1.8.7 and 1.9.2.
 
 == License
 
-Yacht is licensed under the MIT License with one addition: The Software shall be used for Good, not Evil.
+Yacht is licensed under the MIT License.
