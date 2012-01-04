@@ -7,3 +7,6 @@ tmp
 doc
 .yardoc
 .DS_Store
+
+.rvmrc
+.rbenv*
