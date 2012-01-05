@@ -93,29 +93,26 @@ You can also add in extra values from outside of Yacht using the :merge option, 
     # => ";var Yacht = {\"cookie_domain\":\"example.com\",\"current_time\":\"06/29/2011\"};"
 
 
-=== Rails support
+=== Rails
 
-When used inside of a Rails application, Yacht offers some convenience features:
+To use Yacht inside of Rails, just add an initializer to <tt>config/initializers</tt>:
 
-1. <tt>Yacht.environment</tt> will be set by default to the currently loaded environment. For example, if you start your application in <tt>test</tt> mode, Yacht's values will be determined by the <tt>test</tt> entry in <tt>base.yml</tt> .
+    # config/initializers/00_yacht_init.rb
 
-2. <tt>Yacht.dir</tt> will be set to <tt>/RAILS_ROOT/config/yacht</tt> (where <tt>RAILS_ROOT</tt> is the location of your Rails app).
+    # Yacht needs to know where to find its YAML files...
+    # ...and the current Rails environment
+    Yacht::Loader.dir          = Rails.root.join('config', 'yacht')
+    Yacht::Loader.environment  = Rails.env
 
-3. The <tt>yacht_js_snippet</tt> Rails helper wraps the string from <tt>Yacht::Loader#to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
-
-    Yacht.rails_env
-    # => "development"  # Yacht automatically adds the current Rails environment in ruby
-    # If you want rails_env included in javascript, just add it to js_keys.yml
+When used inside of a Rails application, the <tt>yacht_js_snippet</tt> Rails helper is included in the global <tt>ApplicationHelper</tt> so you can use it in views. <tt>yacht_js_snippet</tt> wraps the string from <tt>Yacht::Loader#to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
 
     # inside a view or helper:
     yacht_js_snippet
-    # => "<script type=\"text/javascript\">\n//<![CDATA[\n;var Yacht = {\"cookie_domain\":\"localhost\",\"rails_env\":\"development\"};\n//]]>\n</script>"
+    # => "<script type=\"text/javascript\">\n//<![CDATA[\n;var Yacht = {\"cookie_domain\":\"localhost\"\n//]]>\n</script>"
 
-    # you can also pass options to yacht_js_snippet:
-    yacht_js_snippet(:merge => {:current_time => Time.now.to_s})
+    # you can also pass options to yacht_js_snippet, like the the current Rails environment:
+    yacht_js_snippet(:merge => {:current_time => Time.now.to_s, :rails_env => Rails.env})
     # => "<script type=\"text/javascript\">\n//<![CDATA[\n;var Yacht = {\"cookie_domain\":\"localhost\",\"rails_env\":\"development\",\"current_time\":\"06/29/2011\"};\n//]]>\n</script>"
-
-4. <tt>Yacht.rails_env</tt> will be defined and match the currently loaded Rails environment.
 
 == Ruby compatibility
 
