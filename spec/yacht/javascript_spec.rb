@@ -26,7 +26,13 @@ describe Yacht::Loader do
       subject.stub(:to_hash).and_return(:foo => 'bar', :baz => 'snafu')
       subject.stub(:js_keys).and_return(:baz)
 
-      subject.to_js_snippet(:merge => {:request_id => 123}).should == ';var Yacht = {"baz":"snafu","request_id":123};'
+      correct_snippets = [  # hash key order is random in ruby 1.8.7
+        ';var Yacht = {"baz":"snafu","request_id":123};',
+        ';var Yacht = {"request_id":123,"baz":"snafu"};'
+      ]
+
+      actual = subject.to_js_snippet(:merge => {:request_id => 123})
+      correct_snippets.should include(actual)
     end
   end
 
