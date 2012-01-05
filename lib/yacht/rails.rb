@@ -17,7 +17,7 @@ module Yacht::Rails
   module ClassMethods
     def rails
       if Object.const_defined?(:Rails)
-        ::Rails
+        Rails
       else
         raise "Rails is not defined!"
       end

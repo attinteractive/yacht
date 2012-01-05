@@ -10,10 +10,12 @@ describe Yacht::Rails do
     end
   end
 
+  class FakeRails; end
+
   subject { SomeClass }
 
   describe "when Rails does not exist" do
-    it "should raise an error" do
+    it "including the module should raise an error" do
       expect{
         class SomeClass
           include Yacht::Rails
@@ -23,14 +25,20 @@ describe Yacht::Rails do
   end
 
   describe "when Rails exists" do
-    before do
+    before :all do
       @yacht_dir = "/path/to/rails/config/yacht"
+    end
 
-      SomeClass.stub(:rails_env).and_return(:awesome)
-      SomeClass.stub(:rails_default_yacht_dir).and_return(@yacht_dir)
+    around :each do |example|
+      with_constants :Rails => FakeRails do
+        Rails.stub(:env).and_return(:awesome)
+        Rails.stub_chain(:root, :join).and_return(@yacht_dir)
 
-      class SomeClass
-        include Yacht::Rails
+        class SomeClass
+          include Yacht::Rails
+        end
+
+        example.run
       end
     end
 
