@@ -7,6 +7,8 @@ Bundler.setup
 
 require 'yacht'
 
+Dir['./spec/support/**/*.rb'].map {|f| require f}
+
 RSpec.configure do |config|
   config.before :all do
     # ==============
