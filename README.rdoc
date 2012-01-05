@@ -1,4 +1,4 @@
-= Yacht {<img src="https://secure.travis-ci.org/attinteractive/yacht.png" alt="Build Status" />}[http://travis-ci.org/attinteractive/yacht]
+= Yacht
 
 Yacht is an application configuration gem that lets you define settings for multiple environments in YAML files. It is similar to AppConfig[https://github.com/cjbottaro/app_config] with additional features like:
 * use of ClassyStruct for improved performance over OpenStruct
@@ -93,9 +93,15 @@ You can also add in extra values from outside of Yacht using the :merge option, 
     # => ";var Yacht = {\"cookie_domain\":\"example.com\",\"current_time\":\"06/29/2011\"};"
 
 
-=== +yacht_js_snippet+ Rails helper
+=== Rails support
 
-When using Yacht inside of a Rails application, you can use the +yacht_js_snippet+ method to wrap the string from <tt>Yacht::Loader#to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
+When used inside of a Rails application, Yacht offers some convenience features:
+
+1. <tt>Yacht.environment</tt> will be set by default to the currently loaded environment. For example, if you start your application in <tt>test</tt> mode, Yacht's values will be determined by the <tt>test</tt> entry in <tt>base.yml</tt> .
+
+2. <tt>Yacht.dir</tt> will be set to <tt>/RAILS_ROOT/config/yacht</tt> (where <tt>RAILS_ROOT</tt> is the location of your Rails app).
+
+3. The <tt>yacht_js_snippet</tt> Rails helper wraps the string from <tt>Yacht::Loader#to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
 
     Yacht.rails_env
     # => "development"  # Yacht automatically adds the current Rails environment in ruby
@@ -109,6 +115,7 @@ When using Yacht inside of a Rails application, you can use the +yacht_js_snippe
     yacht_js_snippet(:merge => {:current_time => Time.now.to_s})
     # => "<script type=\"text/javascript\">\n//<![CDATA[\n;var Yacht = {\"cookie_domain\":\"localhost\",\"rails_env\":\"development\",\"current_time\":\"06/29/2011\"};\n//]]>\n</script>"
 
+4. <tt>Yacht.rails_env</tt> will be defined and match the currently loaded Rails environment.
 
 == Ruby compatibility
 
