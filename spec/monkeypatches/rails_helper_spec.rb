@@ -17,7 +17,7 @@ describe 'Yacht::RailsHelper' do
   }
 
   before do
-    Rails             = stub('Rails')
+    Kernel.stub('Rails')
 
     require "monkeypatches/rails_helper"
 
