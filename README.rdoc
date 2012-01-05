@@ -1,6 +1,6 @@
 = Yacht
 
-{<img src="https://secure.travis-ci.org/attinteractive/yacht.png" alt="Build Status" />}[http://travis-ci.org/attinteractive/yacht.png]
+{<img src="https://secure.travis-ci.org/attinteractive/yacht.png" alt="Build Status" />}[http://travis-ci.org/attinteractive/yacht]
 
 Yacht is an application configuration gem that lets you define settings for multiple environments in YAML files. It is similar to AppConfig[https://github.com/cjbottaro/app_config] with additional features like:
 * use of ClassyStruct for improved performance over OpenStruct
