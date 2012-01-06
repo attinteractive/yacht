@@ -57,19 +57,19 @@ First create one or more of the following YAML files in the same directory to de
     # useful for development and testing
     cdn_host: localhost
 
-=== Step 2: Use +Yacht.my_key+ or <tt>Yacht['my_key']</tt> in ruby
+=== Step 2: Tell +Yacht+ where your YAML files are stored, and what environment you want to use.
 
-* <b>Rails</b>:
+    Yacht::Loader.dir          = '/path/to/YAML/dir'
+    Yacht::Loader.environment  = 'my_environment'
+
+
+=== Step 3: Use +Yacht.my_key+ or <tt>Yacht['my_key']</tt> in ruby
+
     # now you can access any key set in your YAML files with:
     Yacht.my_key
     # => "my_value"
     Yacht['my_key']
     # => "my_value"
-
-* Outside of rails, you need to tell +Yacht+ where your YAML files are stored, and what environment you want to use.
-    Yacht::Loader.dir          = '/path/to/YAML/dir'
-    Yacht::Loader.environment  = 'my_environment'
-    Yacht.my_key
 
 
 == Other features
