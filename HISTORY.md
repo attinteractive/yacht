@@ -5,6 +5,8 @@
 
 ### Add Travis CI to github repo
 
+### Clean up and update README
+
 ## [0.2.7](https://github.com/attinteractive/yacht/compare/0.2.6...0.2.7)
 
 ### Bugfixes
