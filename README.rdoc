@@ -99,7 +99,7 @@ Yacht allows for inheritance between environments in a more complex way than sta
     Yacht.clan
     # => 'McGillicuddy'
 
-    # inherited from grandpa with an override for <tt>:year</tt>
+    # inherited from grandpa with an override for :year
     Yacht.car
     # => { :make=>"oldsmobile", :year=>1980 }
 
