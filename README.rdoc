@@ -48,8 +48,8 @@ First create one or more of the following YAML files in the same directory to de
     #   Yacht::Loader.to_classy_struct(:apply_whitelist? => true)
     #   (by default the whitelist is ignored)
     # NOTE: the whitelist is ignored when using Yacht.my_key or Yacht['my_key']
-    #       you have to use Yacht::Loader#to_hash or
-    #       Yacht::Loader#to_classy_struct to use the whitelist
+    #       you have to use Yacht::Loader.to_hash or
+    #       Yacht::Loader.to_classy_struct to use the whitelist
     - public_info
 
     # config/yacht/local.yml (optional)
@@ -82,7 +82,7 @@ If you would like to access values stored in Yacht inside of javascript, there i
     # remember that any values exported to javascript will be visible to all visitors to your site
     - cookie_domain
 
-Then use <tt>Yacht::Loader#to_js_snippet</tt> to create a string that can be eval'd or included in the DOM:
+Then use <tt>Yacht::Loader.to_js_snippet</tt> to create a string that can be eval'd or included in the DOM:
 
     Yacht::Loader.to_js_snippet
     # => ";var Yacht = {\"cookie_domain\":\"example.com\"};"
@@ -105,7 +105,7 @@ To use Yacht inside of Rails, just add an initializer to <tt>config/initializers
     # it makes sense to use your Rails environment names in Yacht
     Yacht::Loader.environment  = Rails.env
 
-When used inside of a Rails application, the <tt>yacht_js_snippet</tt> Rails helper is included in the global <tt>ApplicationHelper</tt> so you can use it in views. <tt>yacht_js_snippet</tt> wraps the string from <tt>Yacht::Loader#to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
+When used inside of a Rails application, the <tt>yacht_js_snippet</tt> Rails helper is included in the global <tt>ApplicationHelper</tt> so you can use it in views. <tt>yacht_js_snippet</tt> wraps the string from <tt>Yacht::Loader.to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
 
     # inside a view or helper:
     yacht_js_snippet
