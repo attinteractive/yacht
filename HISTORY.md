@@ -1,3 +1,10 @@
+## [0.3.0](https://github.com/attinteractive/yacht/compare/0.2.7...0.3.0)
+
+### Less features
+* Remove some unnecessary Rails support features ([#18](https://github.com/attinteractive/yacht/issues/18))
+
+### Add Travis CI to github repo
+
 ## [0.2.7](https://github.com/attinteractive/yacht/compare/0.2.6...0.2.7)
 
 ### Bugfixes
