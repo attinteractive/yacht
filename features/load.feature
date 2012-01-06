@@ -80,7 +80,6 @@ Feature: Load configuration settings
         }
       """
 
-  @js
   Scenario: Generate a javascript snippet
     Given a file named "yacht/js_keys.yml" with:
     """
