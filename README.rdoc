@@ -24,7 +24,7 @@ Yacht is an application configuration gem that lets you define settings for mult
 
 First create one or more of the following YAML files in the same directory to define your settings:
 
-    # config/yacht/base.yml (required)
+    # /path/to/yacht_config_dir/base.yml (required)
     production:
       public_info:
         copyright_year: 2011
@@ -41,7 +41,7 @@ First create one or more of the following YAML files in the same directory to de
         #   see https://gist.github.com/979804 for an explanation
         aws_key: bazbaz
 
-    # config/yacht/whitelist.yml (optional)
+    # /path/to/yacht_config_dir/whitelist.yml (optional)
     # any keys specified here can be used as a whitelist filter:
     #   Yacht::Loader.to_hash(:apply_whitelist? => true)
     #   or
@@ -52,15 +52,15 @@ First create one or more of the following YAML files in the same directory to de
     #       Yacht::Loader.to_classy_struct to use the whitelist
     - public_info
 
-    # config/yacht/local.yml (optional)
+    # /path/to/yacht_config_dir/local.yml (optional)
     # any values set in local.yml will override values set in base.yml
     # useful for development and testing
     cdn_host: localhost
 
 === Step 2: Tell +Yacht+ where your YAML files are stored, and what environment you want to use.
 
-    Yacht::Loader.dir          = '/path/to/YAML/dir'
-    Yacht::Loader.environment  = 'my_environment'
+    Yacht::Loader.dir          = '/path/to/yacht_config_dir'
+    Yacht::Loader.environment  = 'production'
 
 
 === Step 3: Use +Yacht.my_key+ or <tt>Yacht['my_key']</tt> in ruby
@@ -74,10 +74,41 @@ First create one or more of the following YAML files in the same directory to de
 
 == Other features
 
+=== Fancy inheritance
+
+Yacht allows for inheritance between environments in a more complex way than standard YAML does. There are limitations to YAML's inheritance, which are illustrated in {this gist}[https://gist.github.com/979804]. With Yacht, to inherit from another environment, just set the +_parent+ key, like so:
+
+    # /path/to/yacht_config_dir/base.yml
+    grandpa:
+      :clan: McGillicuddy
+      :age: 70
+      :car:
+        :make: oldsmobile
+        :year: 1955
+    pa:
+      _parent: grandpa
+      :age: 40
+      :car:
+        :year: 1980
+
+    # Now set up Yacht
+    Yacht::Loader.dir = '/path/to/yacht_config_dir'
+    Yacht::Loader.environment = 'pa'
+
+    # inherited from grandpa
+    Yacht.clan
+    # => 'McGillicuddy'
+
+    # inherited from grandpa with an override for <tt>:year</tt>
+    Yacht.car
+    # => { :make=>"oldsmobile", :year=>1980 }
+
+See the {cucumber feature}[https://github.com/attinteractive/yacht/blob/master/features/inherit.feature] for more details and examples.
+
 === <tt>Yacht::Loader.to_js_snippet</tt> export to javascript
 If you would like to access values stored in Yacht inside of javascript, there is a helper for that. First, create a YAML file to tell Yacht which keys should be exported:
 
-    # config/yacht/js_keys.yml
+    # /RAILS_ROOT/config/yacht/js_keys.yml
     # only keys listed here will be available in javascript
     # remember that any values exported to javascript will be visible to all visitors to your site
     - cookie_domain
@@ -101,7 +132,7 @@ To use Yacht inside of Rails, just add an initializer to <tt>config/initializers
 
     # look for YAML files in config/yacht inside the Rails app directory
     Yacht::Loader.dir          = Rails.root.join('config', 'yacht')
-    
+
     # it makes sense to use your Rails environment names in Yacht
     Yacht::Loader.environment  = Rails.env
 

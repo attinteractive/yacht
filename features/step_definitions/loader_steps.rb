@@ -33,7 +33,7 @@ module LoaderHelpers
     hash_from_string = eval(string)
 
     in_current_dir do
-      hash_from_string.should == hash
+      hash.should == hash_from_string
     end
   end
 end
