@@ -99,9 +99,10 @@ To use Yacht inside of Rails, just add an initializer to <tt>config/initializers
 
     # config/initializers/00_yacht_init.rb
 
-    # Yacht needs to know where to find its YAML files...
-    # ...and the current Rails environment
+    # look for YAML files in config/yacht inside the Rails app directory
     Yacht::Loader.dir          = Rails.root.join('config', 'yacht')
+    
+    # it makes sense to use your Rails environment names in Yacht
     Yacht::Loader.environment  = Rails.env
 
 When used inside of a Rails application, the <tt>yacht_js_snippet</tt> Rails helper is included in the global <tt>ApplicationHelper</tt> so you can use it in views. <tt>yacht_js_snippet</tt> wraps the string from <tt>Yacht::Loader#to_js_snippet</tt> in a script tag using Rails' +javascript_tag+ helper.
