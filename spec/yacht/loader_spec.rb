@@ -181,12 +181,6 @@ describe Yacht::Loader do
   end
 
   describe :whitelist do
-    # before do
-    #   subject.stub(:base_config).and_return(mock_base_config)
-    #   subject.stub(:local_config).and_return({})
-    #   subject.stub(:whitelist).and_return([:color_of_the_day])
-    # end
-
     it "raises an error if load_config_file returns nil" do
       subject.stub(:load_config_file).with(:whitelist, :expect_to_load => Array).and_return(nil)
 
