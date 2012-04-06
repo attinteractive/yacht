@@ -66,6 +66,28 @@ Feature: Load configuration settings
           }
         """
 
+    Given a file named "yacht/environments/production.yml" with:
+      """
+      _parent: development
+      :mail:
+        :host: development.local
+      """
+      When I load Yacht with environment: "development"
+      Then Yacht should contain the following hash:
+        """
+          {
+            :api_key       =>  'some_crazy_environments_key',
+            :partner_sites =>  [
+                                  'twitter',
+                                  'github'
+                                ],
+            :mail          =>  {
+                                  :host => 'development.local',
+                                  :from => 'Our great company'
+                                }
+          }
+        """
+
   Scenario: Local overrides with local.yml
     Given a file named "yacht/local.yml" with:
       """
