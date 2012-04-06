@@ -12,7 +12,11 @@ class Yacht::Loader
     def full_file_path_for_config(config_type)
       raise Yacht::LoadError.new "No directory set" unless self.dir
 
-      File.join( self.dir, "#{config_type}.yml" )
+      if config_type == :environments
+        File.join( self.dir, "environments" )
+      else
+        File.join( self.dir, "#{config_type}.yml" )
+      end
     end
 
     def config_file_for(config_type)
@@ -24,11 +28,13 @@ class Yacht::Loader
     end
 
     def valid_config_types
-      %w( base local whitelist js_keys )
+      %w( base local whitelist js_keys environments )
     end
 
     def all
-      Yacht::HashHelper.deep_merge( chain_configs(base_config, self.environment), local_config )
+      base = Yacht::HashHelper.deep_merge( chain_configs( base_config, self.environment ), local_config ) 
+      envs = chain_configs(environments_config, self.environment )
+      Yacht::HashHelper.deep_merge base, envs
     end
 
     # @param [Hash] opts the options for creating the hash
@@ -57,6 +63,10 @@ class Yacht::Loader
       load_config_file(:local) || {}
     end
 
+    def environments_config
+      load_config_file(:environments) || {}
+    end
+
   protected
     # Wrap the YAML.load for easier mocking
     def _load_config_file(file_name)
@@ -68,8 +78,15 @@ class Yacht::Loader
       # by default, expect a Hash to be loaded
       expected_class    = opts[:expect_to_load] || Hash
 
-      file_name = self.config_file_for(file_type)
-      loaded    = self._load_config_file(file_name)
+      if file_type == :environments
+        loaded = {}
+        environments_names.each do |file_name|
+          loaded[File.basename(file_name).gsub(File.extname(file_name), "")] = self._load_config_file(file_name)
+        end
+      else
+        file_name = self.config_file_for(file_type)
+        loaded    = self._load_config_file(file_name)
+      end
 
       if loaded && !loaded.is_a?(expected_class) # YAML contained the wrong type
         raise Yacht::LoadError.new "#{file_name} must contain #{expected_class} (got #{loaded.class})"
@@ -100,6 +117,11 @@ class Yacht::Loader
         config['default'] || {}
       end
     end
+
+    def environments_names
+      Dir["#{self.config_file_for(:environments)}/*.yml"] || []
+    end
+
   end
 end
 

@@ -16,6 +16,19 @@ describe Yacht::Loader do
     }
   end
 
+  let(:mock_environments_config) do
+    {
+      'env_foo' => {
+        :color_of_the_day   => 'white',
+        :super_secret_info  => 'tuna'
+      },
+      'env_bar' => {
+        :color_of_the_day   => 'green',
+        :super_secret_info  => 'shark',
+      }
+    }
+  end
+
   describe :dir do
   end
 
@@ -23,7 +36,9 @@ describe Yacht::Loader do
     before do
       subject.stub(:base_config).and_return(mock_base_config)
       subject.stub(:local_config).and_return({})
+      subject.stub(:environments_config).and_return(mock_environments_config)
       subject.stub(:whitelist).and_return([:color_of_the_day])
+      subject.dir = "foo_dir"
     end
 
     it "returns all keys by default" do
@@ -124,8 +139,18 @@ describe Yacht::Loader do
       })
       subject.stub(:local_config).and_return({})
 
+      subject.dir = "foo_dir"
       subject.environment = 'wacky'
       subject.to_hash[:color_of_the_day].should == 'purple'
+    end
+
+    it "merges configuration from environments for named environment onto defaults" do
+      subject.stub(:base_config).and_return(mock_base_config)
+      subject.stub(:environments_config).and_return(mock_environments_config)
+      subject.stub(:local_config).and_return({})
+      subject.dir = "dir_foo"
+      subject.environment = 'env_foo'
+      subject.to_hash[:color_of_the_day].should == 'white'
     end
 
     it "returns the defaults for environments that do not exist" do
@@ -139,6 +164,7 @@ describe Yacht::Loader do
       })
       subject.stub(:local_config).and_return({})
 
+      subject.dir = "foo_dir"
       subject.environment = 'nerdy'
       subject.to_hash.should == {:color_of_the_day => 'orange'}
     end
@@ -156,6 +182,13 @@ describe Yacht::Loader do
       expect {
         subject.base_config
       }.to raise_error(Yacht::LoadError, "Couldn't load base config")
+    end
+  end
+
+  describe :environments_config do
+    it "calls load_config_file" do
+      subject.should_receive(:load_config_file).with(:environments).and_return('foo')
+      subject.environments_config
     end
   end
 
@@ -219,6 +252,15 @@ describe Yacht::Loader do
       subject.send(:load_config_file, :base, :expect_to_load => String).should == "base_bar"
     end
 
+    it "loads the directory for environments" do
+      subject.stub(:config_file_for).with(:environments).and_return('env_foo/environments')
+      subject.stub(:_load_config_file).with("env_foo/environments/foo_a.yml").and_return("env_foo_a")
+      subject.stub(:_load_config_file).with("env_foo/environments/foo_b.yml").and_return("env_foo_b")
+      subject.stub(:environments_names).and_return(["env_foo/environments/foo_a.yml","env_foo/environments/foo_b.yml"])
+      subject.send(:load_config_file, :environments).should == { "foo_a" => "env_foo_a", "foo_b" => "env_foo_b" }
+
+    end
+
     it "raises an error if opening the file leads to an exception" do
       subject.stub(:config_file_for).and_raise(StandardError.new("my_unique_error_message"))
 
@@ -265,6 +307,12 @@ describe Yacht::Loader do
 
       subject.full_file_path_for_config(:foo).should == '/full/path/foo.yml'
     end
+
+    it "return director for environments" do
+      subject.stub(:dir).and_return('/full/path')
+      subject.full_file_path_for_config(:environments).should == '/full/path/environments'
+    end
+
   end
 
   context "checks environment and sets sensible defaults" do

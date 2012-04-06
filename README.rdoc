@@ -105,6 +105,39 @@ Yacht allows for inheritance between environments in a more complex way than sta
 
 See the {cucumber feature}[https://github.com/attinteractive/yacht/blob/master/features/inherit.feature] for more details and examples.
 
+=== Support for Rails style <tt>environments</tt> directory
+
+This version of <tt>Yacht</tt> allows for inheritance from files named for their environment. It will import the file and set the file name to the root key as though it were in <tt>base.yml</tt> in that way.
+
+    # /path/to/yacht_config_dir/environments/grandpa.yml
+    :clan: McGillicuddy
+    :age: 70
+    :car:
+      :make: oldsmobile
+      :year: 1955
+
+    # /path/to/yacht_config_dir/environments/pa.yml
+    _parent: grandpa
+    :age: 40
+    :car:
+      :year: 1980
+
+Will be the same as the follow example:
+
+    # /path/to/yacht_config_dir/base.yml
+    grandpa:
+      :clan: McGillicuddy
+      :age: 70
+      :car:
+        :make: oldsmobile
+        :year: 1955
+    pa:
+      _parent: grandpa
+      :age: 40
+      :car:
+        :year: 1980
+
+
 === <tt>Yacht::Loader.to_js_snippet</tt> export to javascript
 If you would like to access values stored in Yacht inside of javascript, there is a helper for that. First, create a YAML file to tell Yacht which keys should be exported:
 
